@@ -2,12 +2,8 @@ import express from "express";
 import {
   getAppointment,
   scheduleAppointment,
+  updateAppointment,
 } from "../controllers/AppointmentController.js";
-import {
-  deleteDoctor,
-  getDoctorList,
-  registerDoctor,
-} from "../controllers/DoctorController.js";
 
 const router = express.Router();
 
@@ -16,8 +12,7 @@ router.get("/", (req, res) => {
 });
 
 router.post("/add", scheduleAppointment);
-router.get("/all", getAppointment);
-// router.delete("/delete", deleteDoctor);
-// router.put("/update", deleteDoctor);
+router.post("/get", getAppointment);
+router.put("/update", updateAppointment);
 
 export const appointmentRouter = router;

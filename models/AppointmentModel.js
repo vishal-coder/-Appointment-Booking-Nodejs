@@ -16,7 +16,9 @@ export function deleteAppointmentByEmail(data) {
   return client.db("hospital").collection("appointments").deleteOne(data);
 }
 
-export function updateAppointmentBy(data) {
-  const query = "";
-  return client.db("hospital").collection("appointments").updateOne(data);
+export function updateAppointmentById(data, status) {
+  return client
+    .db("hospital")
+    .collection("appointments")
+    .updateOne(data, { $set: { status: status } });
 }

@@ -1,7 +1,9 @@
+import { ObjectId } from "mongodb";
 import {
   fetchAppointmentList,
   ifDuplicateAppointment,
   insertAppointment,
+  updateAppointmentById,
 } from "../models/AppointmentModel.js";
 
 export const scheduleAppointment = async (req, res) => {
@@ -48,10 +50,12 @@ export const getAppointment = async (req, res) => {
   let data = {};
   const { userType, email } = req.body;
   if (userType != "admin") {
-    data = { email: email };
+    data = { bookedBy: email };
   }
 
+  console.log("result-getAppointment- before", data);
   const result = await fetchAppointmentList(data);
+  console.log("result-getAppointment-after", result);
   if (!result) {
     return res.status(401).send({
       message: "Something went wrong..please try again later",
@@ -60,7 +64,23 @@ export const getAppointment = async (req, res) => {
   }
 
   res.status(200).send({
-    message: "User was registered successfully! Please Verify Your Email!",
+    message: "Appointments fetched successfully",
+    success: true,
+    list: result,
+  });
+};
+
+export const updateAppointment = async (req, res) => {
+  console.log("updateAppointment requested");
+
+  const { _id, status } = req.body;
+  console.log("updateAppointment requested", _id, status);
+
+  const result = await updateAppointmentById({ _id: ObjectId(_id) }, status);
+  console.log("result-getAppointment-after", result);
+
+  res.status(200).send({
+    message: "Appointments updated successfully",
     success: true,
     list: result,
   });
