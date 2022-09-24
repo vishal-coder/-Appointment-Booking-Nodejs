@@ -94,12 +94,10 @@ export const login = async (req, res) => {
   res.send({
     message: "user logged successfully",
     success: true,
-    token: token,
     user: {
       name: dBUserByEmail.firstname,
       email: dBUserByEmail.username,
-      userType: dBUserByEmail.role,
-      address: dBUserByEmail.address,
+      userType: dBUserByEmail.userType,
       token: token,
     },
   });
