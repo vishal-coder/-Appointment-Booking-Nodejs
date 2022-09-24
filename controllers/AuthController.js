@@ -21,7 +21,6 @@ import {
  *
  */
 export const signup = async (req, res) => {
-  console.log("signup requested", req.body);
   const { firstname, lastname, phone, address, username, password, about } =
     req.body;
   const dBUserByEmail = await getDBUserByEmail({ username: username });
@@ -49,7 +48,7 @@ export const signup = async (req, res) => {
     { username: username },
     confirmationToken
   );
-  console.log("isInserted", isInserted);
+
   sendAccountVerificationMail(username, confirmationToken, firstname);
 
   res.status(200).send({
@@ -68,7 +67,7 @@ export const login = async (req, res) => {
   }
 
   const isActive = dBUserByEmail.isActive;
-  console.log("isActive", dBUserByEmail.isActive);
+
   if (!isActive) {
     return res.status(401).send({
       message: "Before login, Please verify your email",

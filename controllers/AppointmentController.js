@@ -25,7 +25,7 @@ export const scheduleAppointment = async (req, res) => {
   const checkdata = { doctor_email: doctor_email, date: date, slot: slot };
 
   const duplicate = await ifDuplicateAppointment(checkdata);
-  // console.log(duplicate);
+
   if (duplicate && duplicate.length > 0) {
     return res.status(200).send({
       message: "Appointment for selected slot not available",
@@ -55,16 +55,14 @@ export const scheduleAppointment = async (req, res) => {
 };
 
 export const getAppointment = async (req, res) => {
-  console.log("getAppointment requested", req.body);
   let data = {};
   const { userType, email } = req.body;
   if (userType != "admin") {
     data = { bookedBy: email };
   }
 
-  console.log("result-getAppointment- before", data);
   const result = await fetchAppointmentList(data);
-  console.log("result-getAppointment-after", result);
+
   if (!result) {
     return res.status(401).send({
       message: "Something went wrong..please try again later",
@@ -83,10 +81,8 @@ export const updateAppointment = async (req, res) => {
   console.log("updateAppointment requested");
 
   const { _id, status } = req.body;
-  console.log("updateAppointment requested", _id, status);
 
   const result = await updateAppointmentById({ _id: ObjectId(_id) }, status);
-  console.log("result-getAppointment-after", result);
 
   res.status(200).send({
     message: "Appointments updated successfully",

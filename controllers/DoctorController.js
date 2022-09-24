@@ -53,7 +53,7 @@ export const getDoctorList = async (req, res) => {
   console.log("getDoctorList requested");
 
   const result = await fetchDoctorList();
-  console.log(result);
+
   if (!result) {
     return res.status(401).send({
       message: "Something went wrong..please try again later",
