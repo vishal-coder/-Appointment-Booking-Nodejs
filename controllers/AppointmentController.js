@@ -1,4 +1,6 @@
 import { ObjectId } from "mongodb";
+import { newAppointmentEmmiter } from "../EventMonitor/AppointmentEventMonitor.js";
+import { client } from "../index.js";
 import {
   fetchAppointmentList,
   ifDuplicateAppointment,
@@ -7,7 +9,7 @@ import {
 } from "../models/AppointmentModel.js";
 
 export const scheduleAppointment = async (req, res) => {
-  console.log("scheduleAppointment requested", req.body);
+  // console.log("scheduleAppointment requested", req.body);
   const { bookedBy, slot, email, doctor_email, date, doctor_name } = req.body;
 
   const data = {
@@ -19,18 +21,25 @@ export const scheduleAppointment = async (req, res) => {
     status: "open",
     createdOn: new Date(),
   };
-  console.log("appointment data", data);
+  // console.log("appointment data", data);
   const checkdata = { doctor_email: doctor_email, date: date, slot: slot };
 
   const duplicate = await ifDuplicateAppointment(checkdata);
-  console.log(duplicate);
+  // console.log(duplicate);
   if (duplicate && duplicate.length > 0) {
     return res.status(200).send({
       message: "Appointment for selected slot not available",
       success: false,
     });
   }
-
+  const pipeline = [
+    {
+      $match: {
+        operationType: "insert",
+      },
+    },
+  ];
+  newAppointmentEmmiter(client, 10000, pipeline);
   const result = await insertAppointment(data);
   if (!result) {
     return res.status(401).send({
